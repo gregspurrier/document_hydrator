@@ -1,9 +1,9 @@
 module DocumentHydrator
   class <<self
     # Given a +document+ hash, a path or array of paths describing locations of object IDs within
-    # the hash, and a function that will convert object IDs to subdocument hashes, modifies the
-    # document hash so that all of the IDs referenced by the paths are replaced with the corresponding
-    # subdocuments.
+    # the hash, and a function that will convert object IDs to a hash of subdocument hashes indexed
+    # by object ID, modifies the document hash so that all of the IDs referenced by the paths are
+    # replaced with the corresponding subdocuments.
     #
     # Path examples:
     #
@@ -40,9 +40,7 @@ module DocumentHydrator
       # Rehydrate the documents that we discovered during traversal all in one go
       ids = dehydrated_subdocuments.keys
       hydrated_subdocuments = hydration_proc.call(ids)
-      ids.zip(hydrated_subdocuments).each do |id, hydrated_subdocument|
-        dehydrated_subdocuments[id].replace(hydrated_subdocument)
-      end
+      ids.each {|id| dehydrated_subdocuments[id].replace(hydrated_subdocuments[id])}
 
       documents
     end

@@ -9,23 +9,26 @@ describe DocumentHydrator do
         @invocation_count = 0
       end
 
-      def ids_to_documents(ids)
+      def ids_to_document_hash(ids)
         @invocation_count += 1
-        ids.map { |id| { 'id' => id } }
+        ids.inject({}) do |hash, id|
+          hash[id] = { 'id' => id }
+          hash
+        end
       end
     end
   end
   
   before(:each) do
     Dummy.reset_invocation_count
-    @hydration_proc = lambda { |ids| Dummy.ids_to_documents(ids) }
+    @hydration_proc = lambda { |ids| Dummy.ids_to_document_hash(ids) }
   end
 
   describe '.hydrate_document' do
     context 'with a simple path to an array of ids' do
       it 'replaces the array with an array of hydrated documents' do
         orig = { 'key1' => 37, 'users' => [27, 39] }
-        expected = orig.dup.tap { |d| d['users'] = Dummy.ids_to_documents(d['users']) }
+        expected = { 'key1' => 37, 'users' => [{ 'id' => 27 }, { 'id' => 39 }] }
         DocumentHydrator.hydrate_document(orig.dup, 'users', @hydration_proc).should == expected
       end
 
@@ -43,7 +46,7 @@ describe DocumentHydrator do
     context 'with a simple path to an individual id' do
       it 'replaces the id with the corresponding hydrated document' do
         orig = { 'key1' => 37, 'user' => 72}
-        expected = orig.dup.tap { |d| d['user'] = Dummy.ids_to_documents([d['user']]).first }
+        expected = { 'key1' => 37, 'user' => { 'id' => 72 }}
         DocumentHydrator.hydrate_document(orig.dup, 'user', @hydration_proc).should == expected
       end
     end
@@ -51,7 +54,7 @@ describe DocumentHydrator do
     context 'with a compound path to an array of ids' do
       it 'replaces the array with an array of hydrated documents' do
         orig = { 'key1' => 37, 'foo' => { 'users' => [27, 39] } }
-        expected = orig.dup.tap { |d| d['foo']['users'] = Dummy.ids_to_documents(d['foo']['users']) }
+        expected = { 'key1' => 37, 'foo' => { 'users' => [{ 'id' => 27 }, { 'id' => 39 }] } }
         DocumentHydrator.hydrate_document(orig.dup, 'foo.users', @hydration_proc).should == expected
       end
 
@@ -65,11 +68,13 @@ describe DocumentHydrator do
       it 'hydrates all of the expanded paths' do
         orig = {
           'key1' => 37,
-          'foos' => [ { 'users' => [27, 39] }, { 'users' => [27, 39] } ]
+          'foos' => [ { 'users' => [27, 39] }, { 'users' => [27, 88] } ]
         }
-        expected = orig.dup.tap do |d|
-          d['foos'].each { |subdoc| DocumentHydrator.hydrate_document(subdoc, 'users', @hydration_proc) }
-        end
+        expected = {
+          'key1' => 37,
+          'foos' => [ { 'users' => [{ 'id' => 27 }, { 'id' => 39 }] },
+                      { 'users' => [{ 'id' => 27 }, { 'id' => 88 }] }]
+        }
         DocumentHydrator.hydrate_document(orig.dup, 'foos.users', @hydration_proc).should == expected
       end
     end
