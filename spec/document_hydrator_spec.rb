@@ -110,6 +110,35 @@ describe DocumentHydrator do
         Dummy.invocation_count.should == 1
       end
     end
+
+    context "with a path whose terminal key ends with '_id'" do
+      it "removes the '_id' suffix during hydration" do
+        orig = {
+          'key1' => 37,
+          'user_id' => 99
+        }
+        expected = {
+          'key1' => 37,
+          'user' => { 'id' => 99 }
+        }
+        DocumentHydrator.hydrate_document(orig.dup, 'user_id', @hydration_proc).should == expected
+      end
+    end
+
+    context "with a path whose terminal key ends with '_ids'" do
+      it "removes the '_ids' suffix and pluralizes the root during hydration" do
+        orig = {
+          'key1' => 37,
+          'foos' => [ { 'user_ids' => [27, 39] }, { 'user_ids' => [27, 88] } ]
+        }
+        expected = {
+          'key1' => 37,
+          'foos' => [ { 'users' => [{ 'id' => 27 }, { 'id' => 39 }] },
+                      { 'users' => [{ 'id' => 27 }, { 'id' => 88 }] }]
+        }
+        DocumentHydrator.hydrate_document(orig.dup, 'foos.user_ids', @hydration_proc).should == expected
+      end
+    end
   end
 
   describe '.hydrate_documents' do

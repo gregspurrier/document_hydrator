@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'bson_ext', :platforms => :ruby
 gem 'bson', :platforms => :jruby
 gem 'mongo'
+gem 'activesupport', '> 2.0'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.

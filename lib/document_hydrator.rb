@@ -1,3 +1,7 @@
+require 'active_support/inflector'
+require 'active_support/inflections'
+require 'active_support/core_ext/string/inflections'
+
 module DocumentHydrator
   class <<self
     # Given a +document+ hash, a path or array of paths describing locations of object IDs within
@@ -53,7 +57,12 @@ module DocumentHydrator
       if document.has_key?(step)
         subdocument = document[step]
         if next_steps.empty?
-          # End of the path, do the hydration
+          # End of the path, do the hydration, dropping any _id or _ids suffix
+          if step =~ /_ids?$/
+            document.delete(step)
+            step = step.sub(/_id(s?)$/, '')
+            step = step.pluralize if $1 == 's'
+          end
           if subdocument.kind_of?(Array)
             document[step] = subdocument.map {|id| dehydrated_documents[id] }
           else
