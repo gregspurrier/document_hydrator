@@ -42,8 +42,19 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
       hydrator.call([1, 3])
     end
 
-    it 'handles the case of _id being removed from result set' do
+    it "handles the case of '_id' being explicitly removed from result set" do
       options = { :fields => { 'name' => 1, '_id' => 0 } }
+      expected = {
+        1 => { 'name' => 'Fred' },
+        3 => { 'name' => 'Barney' }
+      }
+
+      hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection, options)
+      hydrator.call([1, 3]).should == expected
+    end
+
+    it "handles the case of :_id being explicitly removed from result set" do
+      options = { :fields => { :name => 1, :_id => 0 } }
       expected = {
         1 => { 'name' => 'Fred' },
         3 => { 'name' => 'Barney' }
