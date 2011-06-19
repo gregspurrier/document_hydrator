@@ -1,6 +1,4 @@
 require 'active_support/inflector'
-require 'active_support/inflections'
-require 'active_support/core_ext/string/inflections'
 
 module DocumentHydrator
   class <<self
