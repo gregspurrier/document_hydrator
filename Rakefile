@@ -16,8 +16,8 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/gregspurrier/document_hydrator"
   gem.license = "MIT"
   gem.summary = %Q{DocumentHydrator takes a document, represented as a Ruby Hash, and efficiently updates it so that embedded references to other documents are replaced with their corresponding subdocuments.}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "gspurrier@linkedin.com"
+  gem.description = %Q{DocumentHydrator takes a document, represented as a Ruby Hash, and efficiently updates it so that embedded references to other documents are replaced with their corresponding subdocuments.}
+  gem.email = "greg.spurrier@gmail.com"
   gem.authors = ["Greg Spurrier"]
   # dependencies defined in Gemfile
 end
