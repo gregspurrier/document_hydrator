@@ -32,4 +32,25 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
     hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection)
     DocumentHydrator.hydrate_document(document, ['users'], hydrator).should == expected
   end
+
+  context 'with optional finder options' do
+    it 'passes them to Mongo::Collection#find' do
+      options = { :fields => { 'name' => 1 } }
+      @users_collection.should_receive(:find).with(anything, options).and_return([])
+
+      hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection, options)
+      hydrator.call([1, 3])
+    end
+
+    it 'handles the case of _id being removed from result set' do
+      options = { :fields => { 'name' => 1, '_id' => 0 } }
+      expected = {
+        1 => { 'name' => 'Fred' },
+        3 => { 'name' => 'Barney' }
+      }
+
+      hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection, options)
+      hydrator.call([1, 3]).should == expected
+    end
+  end
 end
