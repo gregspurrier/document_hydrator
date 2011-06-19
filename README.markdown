@@ -106,13 +106,26 @@ Multiple documents may be hydrated at once using
 
     doc1 = { 'thing' => 1, 'gizmo' => 3 }
     doc2 = { 'thing' => 2, 'gizmo' => 3 }
-    DocumentHydrator.hydrate_documents([doc1, doc2], 'thing',
-      identity_hydrator)
+    DocumentHydrator.hydrate_documents([doc1, doc2], 'thing', identity_hydrator)
     # => [{"thing"=>{"id"=>1}, "gizmo"=>3}, {"thing"=>{"id"=>2}, "gizmo"=>3}]
 
 The only difference between `hydrate_document` and `hydrate_documents`
 is that the latter takes an array of documents. The other parameters
 are the same.
+
+## _id Suffix Stripping
+DocumentHydrator automatically strips any 'id' or 'ids' suffixes from
+keys that are the last step in a hydration path:
+
+    doc = { 
+      'user_id' => 33,
+      'follower_ids' => [11, 23]
+    }
+    DocumentHydrator.hydrate_document(doc,
+      ['user_id', 'follower_ids'], identity_hydrator)
+    # => {"user"=>{"id"=>33}, "followers"=>[{"id"=>11}, {"id"=>23}]}
+
+Notice that the document now has the keys 'user' and 'followers'.
 
 ## Hydrating Documents with MongoDB Collections
 DocumentHydrator provides a hydration proc factory that makes it
