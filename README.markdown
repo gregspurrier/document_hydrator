@@ -161,6 +161,7 @@ For example:
 
 ## Supported Rubies
 DocumentHydrator has been tested with:
+
 * Ruby 1.8.7 (p334)
 * Ruby 1.9.2 (p180)
 * JRuby 1.6.2
