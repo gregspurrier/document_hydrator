@@ -1,4 +1,4 @@
-require 'active_support/inflector'
+require 'document_hydrator/inflector'
 if defined? Mongo
   require 'document_hydrator/hydration_proc/mongo'
 end
@@ -62,7 +62,7 @@ module DocumentHydrator
           if step =~ /_ids?$/
             document.delete(step)
             step = step.sub(/_id(s?)$/, '')
-            step = step.pluralize if $1 == 's'
+            step = Inflector.pluralize(step) if $1 == 's'
           end
           if subdocument.kind_of?(Array)
             document[step] = subdocument.map {|id| dehydrated_documents[id] }
