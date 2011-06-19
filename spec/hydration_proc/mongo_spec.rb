@@ -1,7 +1,6 @@
 require 'spec_helper'
-require 'document_hydrator/hydrator_proc/mongo'
 
-describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
+describe DocumentHydrator::HydrationProc::Mongo, '.collection' do
   before(:each) do
     db = Mongo::Connection.new.db('document_hydrator_test')
     @users_collection = db['users']
@@ -13,7 +12,7 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
   end
 
   it 'returns a hydration proc that fetches subdocuments from the provided Mongo::Collection' do
-    hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection)
+    hydrator = DocumentHydrator::HydrationProc::Mongo.collection(@users_collection)
     expected = {
       1 => @users_collection.find_one('_id' => 1),
       3 => @users_collection.find_one('_id' => 3),
@@ -29,7 +28,7 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
       ]
     }
 
-    hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection)
+    hydrator = DocumentHydrator::HydrationProc::Mongo.collection(@users_collection)
     DocumentHydrator.hydrate_document(document, ['users'], hydrator).should == expected
   end
 
@@ -38,7 +37,7 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
       options = { :fields => { 'name' => 1 } }
       @users_collection.should_receive(:find).with(anything, options).and_return([])
 
-      hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection, options)
+      hydrator = DocumentHydrator::HydrationProc::Mongo.collection(@users_collection, options)
       hydrator.call([1, 3])
     end
 
@@ -49,7 +48,7 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
         3 => { 'name' => 'Barney' }
       }
 
-      hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection, options)
+      hydrator = DocumentHydrator::HydrationProc::Mongo.collection(@users_collection, options)
       hydrator.call([1, 3]).should == expected
     end
 
@@ -60,7 +59,7 @@ describe DocumentHydrator::HydratorProc::Mongo, '.collection' do
         3 => { 'name' => 'Barney' }
       }
 
-      hydrator = DocumentHydrator::HydratorProc::Mongo.collection(@users_collection, options)
+      hydrator = DocumentHydrator::HydrationProc::Mongo.collection(@users_collection, options)
       hydrator.call([1, 3]).should == expected
     end
   end

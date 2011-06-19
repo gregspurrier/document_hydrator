@@ -1,7 +1,5 @@
-require 'mongo'
-
 module DocumentHydrator
-  module HydratorProc
+  module HydrationProc
     module Mongo
       class <<self
         # Create a hydration proc that fetches subdocuments by ID from

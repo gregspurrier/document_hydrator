@@ -1,4 +1,7 @@
 require 'active_support/inflector'
+if defined? Mongo
+  require 'document_hydrator/hydration_proc/mongo'
+end
 
 module DocumentHydrator
   class <<self
