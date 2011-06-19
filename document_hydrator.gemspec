@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION",
+    "document_hydrator.gemspec",
     "lib/document_hydrator.rb",
     "lib/document_hydrator/hydration_proc/mongo.rb",
     "lib/document_hydrator/inflector.rb",
