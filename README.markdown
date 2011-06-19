@@ -12,6 +12,21 @@ guaranteed to be called at most once during any given invocation of
 DocumentHydrator, ensuring efficient hydration of multiple
 subdocuments.
 
+## Installation
+Install the gem:
+
+    gem install document_hydrator
+
+Require the library:
+
+    require 'document_hydrator'
+
+If you want to use the optional MongoDB collection hydrator, make
+sure you require the MongoDB driver first:
+
+    require 'mongo'
+    require 'document_hydrator'
+
 ## Hydration Procs
 Hydration procs are responsible for transforming an array of document
 references into a hash that maps those references to their
