@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{document_hydrator}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Greg Spurrier"]
-  s.date = %q{2011-06-19}
+  s.date = %q{2011-10-03}
   s.description = %q{DocumentHydrator takes a document, represented as a Ruby Hash, and efficiently updates it so that embedded references to other documents are replaced with their corresponding subdocuments.}
   s.email = %q{greg.spurrier@gmail.com}
   s.extra_rdoc_files = [
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     ".autotest",
     ".rspec",
     "Gemfile",
+    "HISTORY.markdown",
     "LICENSE.txt",
     "README.markdown",
     "Rakefile",
