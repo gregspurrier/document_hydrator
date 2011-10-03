@@ -64,11 +64,15 @@ module DocumentHydrator
             step = step.sub(/_id(s?)$/, '')
             step = Inflector.pluralize(step) if $1 == 's'
           end
-          if subdocument.kind_of?(Array)
-            document[step] = subdocument.map {|id| dehydrated_documents[id] }
-          else
-            document[step] = dehydrated_documents[subdocument]
-          end
+          document[step] =
+            case subdocument
+            when Array
+              subdocument.map {|id| dehydrated_documents[id] }
+            when nil
+              nil
+            else
+              dehydrated_documents[subdocument]
+            end
         else
           # Keep on stepping
           if subdocument.kind_of?(Array)

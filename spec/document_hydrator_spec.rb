@@ -18,7 +18,7 @@ describe DocumentHydrator do
       end
     end
   end
-  
+
   before(:each) do
     Dummy.reset_invocation_count
     @hydration_proc = lambda { |ids| Dummy.ids_to_document_hash(ids) }
@@ -48,6 +48,13 @@ describe DocumentHydrator do
         orig = { 'key1' => 37, 'user' => 72}
         expected = { 'key1' => 37, 'user' => { 'id' => 72 }}
         DocumentHydrator.hydrate_document(orig.dup, 'user', @hydration_proc).should == expected
+      end
+    end
+
+    context 'with a nil id' do
+      it 'leaves the id as nil' do
+        orig = { 'key1' => 37, 'user' => nil}
+        DocumentHydrator.hydrate_document(orig.dup, 'user', @hydration_proc).should == orig
       end
     end
 
@@ -120,6 +127,18 @@ describe DocumentHydrator do
         expected = {
           'key1' => 37,
           'user' => { 'id' => 99 }
+        }
+        DocumentHydrator.hydrate_document(orig.dup, 'user_id', @hydration_proc).should == expected
+      end
+
+      it "removes the '_id' suffix during hydration event when id is nil" do
+        orig = {
+          'key1' => 37,
+          'user_id' => nil
+        }
+        expected = {
+          'key1' => 37,
+          'user' => nil
         }
         DocumentHydrator.hydrate_document(orig.dup, 'user_id', @hydration_proc).should == expected
       end
